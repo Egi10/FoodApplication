@@ -25,10 +25,6 @@ class MainActivity : BaseActivity() {
         with(mainViewModel) {
             response.observe(this@MainActivity, Observer {
                 when(it.status) {
-                    Status.SHOWLOADING -> {
-                        Log.d("Sukses", "Loading")
-                    }
-
                     Status.SUCCESS -> {
                         val listData = it.data
                         listData?.categories?.let { listCategory ->
@@ -42,14 +38,14 @@ class MainActivity : BaseActivity() {
                         Log.d("Sukses", "Error")
                     }
 
-                    Status.HIDELOADING -> {
-                        Log.d("Sukses", "Hide")
-                    }
-
                     else -> {
                         Log.d("Sukses", "Error")
                     }
                 }
+            })
+
+            loading.observe(this@MainActivity, Observer {
+                swipeRefresh.isRefreshing = it
             })
         }
     }
