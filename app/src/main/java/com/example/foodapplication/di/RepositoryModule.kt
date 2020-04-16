@@ -1,9 +1,13 @@
 package com.example.foodapplication.di
 
-import com.example.foodapplication.ui.MainRepository
-import com.example.foodapplication.ui.MainRepositoryImpl
-import org.koin.dsl.module.module
+import com.example.foodapplication.repository.MainRepository
+import com.example.foodapplication.repository.MainRepositoryImpl
+import org.koin.dsl.module
 
-val repositoryModule = module {
-    single<MainRepository> { MainRepositoryImpl(get()) }
+fun repositoryModule() = module {
+    single<MainRepository> {
+        MainRepositoryImpl(
+            get()
+        )
+    }
 }

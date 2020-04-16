@@ -1,9 +1,9 @@
 package com.example.foodapplication.di
 
 import com.example.foodapplication.ui.MainViewModel
-import org.koin.android.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.module
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 
-val viewModelModule = module {
+fun viewModelModule() = module {
     viewModel { MainViewModel(get()) }
 }

@@ -1,4 +1,4 @@
-package com.example.foodapplication.ui
+package com.example.foodapplication.repository
 
 import com.example.foodapplication.network.model.Response
 import io.reactivex.Single

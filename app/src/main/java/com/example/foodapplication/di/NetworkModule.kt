@@ -1,12 +1,12 @@
 package com.example.foodapplication.di
 
 import com.example.foodapplication.network.ApiInterface
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-val networkModule = module {
+fun networkModule() = module {
     single {
         createWebService<ApiInterface>()
     }

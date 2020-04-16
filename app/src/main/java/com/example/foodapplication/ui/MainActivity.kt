@@ -1,29 +1,29 @@
 package com.example.foodapplication.ui
 
-import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodapplication.R
-import com.example.foodapplication.network.handling.Resource
+import com.example.foodapplication.base.BaseActivity
 import com.example.foodapplication.network.handling.Status
-import com.example.foodapplication.network.model.Response
+import com.example.foodapplication.network.model.CategoriesItem
 import com.example.foodapplication.ui.adapter.FoodAdapter
 import kotlinx.android.synthetic.main.activity_main.*
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : AppCompatActivity() {
-    //Inject
-    private val mainViewModel by inject<MainViewModel>()
+class MainActivity : BaseActivity() {
+    private val mainViewModel by viewModel<MainViewModel>()
+    private val list: MutableList<CategoriesItem> = mutableListOf()
+    private lateinit var foodAdapter: FoodAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun contentView(): Int {
+        return R.layout.activity_main
+    }
 
+    override fun initObservable() {
         with(mainViewModel) {
-            getCategory().observe(this@MainActivity, Observer<Resource<Response>> {
+            response.observe(this@MainActivity, Observer {
                 when(it.status) {
                     Status.SHOWLOADING -> {
                         Log.d("Sukses", "Loading")
@@ -31,15 +31,11 @@ class MainActivity : AppCompatActivity() {
 
                     Status.SUCCESS -> {
                         val listData = it.data
-
-                        val foodAdapter = listData?.categories?.let { it1 ->
-                            FoodAdapter(it1) {
-
-                            }
+                        listData?.categories?.let { listCategory ->
+                            list.clear()
+                            list.addAll(listCategory)
+                            foodAdapter.notifyDataSetChanged()
                         }
-                        recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
-                        recyclerView.addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
-                        recyclerView.adapter = foodAdapter
                     }
 
                     Status.ERROR -> {
@@ -56,5 +52,14 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    override fun initView() {
+        foodAdapter = FoodAdapter(list) {
+
+        }
+        recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+        recyclerView.addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
+        recyclerView.adapter = foodAdapter
     }
 }
