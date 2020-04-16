@@ -35,11 +35,11 @@ class MainActivity : BaseActivity() {
                     }
 
                     Status.ERROR -> {
-                        Log.d("Sukses", "Error")
+                        Log.d("Error", it.message.toString())
                     }
 
                     else -> {
-                        Log.d("Sukses", "Error")
+                        Log.d("Error", it.message.toString())
                     }
                 }
             })
