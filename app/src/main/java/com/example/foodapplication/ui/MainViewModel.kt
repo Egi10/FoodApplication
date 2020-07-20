@@ -7,10 +7,14 @@ import com.example.foodapplication.network.handling.Resource
 import com.example.foodapplication.network.model.Response
 import com.example.foodapplication.repository.MainRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
+class MainViewModel(
+    private val mainRepository: MainRepository,
+    private val compositeDisposable: CompositeDisposable
+) : ViewModel() {
     private val _response = MutableLiveData<Resource<Response>>()
     val response: LiveData<Resource<Response>> get() = _response
 
@@ -22,7 +26,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
     }
 
     private fun getCategory() {
-        mainRepository.getCategories()
+        val disposable = mainRepository.getCategories()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
@@ -40,5 +44,12 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
                     _response.postValue(Resource.error(it.message.toString(), null))
                 }
             )
+
+        compositeDisposable.add(disposable)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
     }
 }
